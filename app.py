@@ -121,6 +121,45 @@ def get_cache_path(cpf, linkedin_url):
 def healthz():
     return {"status": "ok"}, 200
 
+@app.route("/api/payment-status", methods=["GET"])
+def payment_status():
+    cpf = request.args.get("cpf")
+    if not cpf:
+        return jsonify({"error": "CPF é obrigatório"}), 400
+
+    db = get_db()
+    cur = db.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT resume_token, expires_at, usage_count, max_usage, status
+        FROM payments
+        WHERE cpf = %s
+        ORDER BY created_at DESC
+        LIMIT 1
+    """, (cpf,))
+    payment = cur.fetchone()
+    cur.close()
+
+    if not payment:
+        return jsonify({"paid": False}), 200
+
+    # Validação simples
+    is_valid = (
+        payment["status"] == "paid"
+        and (payment["expires_at"] is None or payment["expires_at"] > time.time())
+        and payment["usage_count"] < payment["max_usage"]
+    )
+
+    if not is_valid:
+        return jsonify({"paid": False}), 200
+
+    return jsonify({
+        "paid": True,
+        "resume_token": payment["resume_token"],
+        "expires_at": payment["expires_at"].isoformat() if payment["expires_at"] else None,
+        "usage_count": payment["usage_count"],
+        "max_usage": payment["max_usage"]
+    }), 200
+
 # ========== Webhook ==========
 @app.route("/webhook/payment", methods=["POST"])
 def webhook_payment():
