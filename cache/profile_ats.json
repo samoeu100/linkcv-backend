@@ -1,0 +1,160 @@
+{
+  "name": "Samuel Alexandre",
+  "headline": "Engenheiro de dados III | Data Engineer III",
+  "location": "Sapiranga, Rio Grande do Sul, Brazil",
+  "summary": "Na Larroude Inc. sou Coordenador de Dados e orquestro pipelines usando Airbyte e Docker para extrair dados do Shopify e carregar direto no BigQuery, automatizando ponta a ponta os processos de pedidos e estoque. Implemento transformações com dbt, orquestrações com Airflow e agendo jobs via Cloud Scheduler em containers, o que nos permitiu reduzir custos no Google Cloud Platform e aumentar a confiabilidade dos dados. Enquanto curso Arquitetura de Dados na Anhanguera, aplico no dia a dia conceitos de modelagem, otimização de consultas no BigQuery e crio fluxos customizados em Klaviyo. Meu foco é transformar dados em respostas!",
+  "links": {
+    "linkedin": "https://www.linkedin.com/in/samuel-alexandre-56251a145/"
+  },
+  "experience": [
+    {
+      "company": "Larroude Inc.",
+      "title": "Engenheiro de dados III",
+      "start": "Apr 2025",
+      "end": "Present",
+      "location": "Sapiranga, Rio Grande do Sul, Brasil",
+      "description": "Responsável pela infraestrutura em GCP com foco em custo, segurança e escalabilidade. Experiência em BigQuery (arquitetura medalhão, ML para classificação de SKUs por estação), desenvolvimento de RAG em Python (PyTorch) para consultas em documentação, e integração de dados com Airbyte, Data Canvas e pipelines Gemini no BigQuery."
+    },
+    {
+      "company": "Larroude Inc.",
+      "title": "Engenheiro de Dados II",
+      "start": "Aug 2024",
+      "end": "Apr 2025",
+      "location": "Sapiranga, Rio Grande do Sul, Brasil",
+      "description": "Pipelines e Integração: Desenvolvimento de pipelines robustos com Data Fusion, integrando dados de Shopify (pedidos, estoque, faturamento) com NetSuite Oracle para suporte à emissão de notas fiscais. Reduzi custos do Google Cloud (GCP) de R$28.000 para R$2.900 através da otimização de pipelines e recursos. Automação e Análise: Implementação de processos automatizados com Google Cloud Scheduler, e uso de BigQuery para análises avançadas e suporte à previsão de dados. Construi um agente de IA com LLM que utiliza dados de vendas do Shopify US, integrado ao Perplexity para análises e automação de insights. Marketing e Integração: Criação de fluxos personalizados em Klaviyo, integrando com canais como WhatsApp, além de extração de dados de GA4, Meta Ads, Google Sheets, Clarity e Attentive para campanhas de marketing."
+    },
+    {
+      "company": "Use - Uniforme e Material Escolar",
+      "title": "Engenheiro de dados Pleno",
+      "start": "Dec 2023",
+      "end": "Sep 2024",
+      "location": "São Paulo, Brasil",
+      "description": "Desenvolvimento de sistemas analíticos com Streamlit, GCP, Python, Polars e SQL. Infraestrutura em Linux (VMs) com práticas de DevOps para APIs escaláveis. Processamento de dados em larga escala com Dataproc e armazenamento em GCS/Data Lake. Automação e Machine Learning com BigQuery ML e Cloud Scheduler. Implantação de APIs em Cloud Run e criação de dashboards para análise e suporte à decisão. Integração de sistemas utilizando Bling ERP v2 e v3 com Nuvemshop API."
+    },
+    {
+      "company": "Use - Uniforme e Material Escolar",
+      "title": "Engenheiro de dados",
+      "start": "Dec 2022",
+      "end": "Dec 2023",
+      "location": "São Paulo, Brasil",
+      "description": "Análise de dados: Extração e análise de dados para áreas de Customer Service e Financeiro. Ferramentas analíticas: Utilização de Power BI, Google BigQuery, MongoDB, SQL, AWS e Python Pandas para ETL e criação de pipelines."
+    },
+    {
+      "company": "Analista de NOC/SOC - BI",
+      "title": "Analista de NOC/SOC - BI",
+      "start": "Dec 2020",
+      "end": "Nov 2022",
+      "location": null,
+      "description": "Especializado em Power BI, DataStudio, Excel, Grafana, Wanguard e Juniper Networks."
+    },
+    {
+      "company": "Líder de suporte técnico",
+      "title": "Líder de suporte técnico",
+      "start": "Jan 2020",
+      "end": "Dec 2020",
+      "location": "São Paulo, Brasil",
+      "description": "Suporte especializado: Atendimento técnico avançado para clientes corporativos nas áreas de finanças (XP, BTG, Nuinvest)."
+    },
+    {
+      "company": "Soldado de infantaria",
+      "title": "Soldado de infantaria",
+      "start": "Jan 2019",
+      "end": "Jan 2020",
+      "location": "CPOR SÃO PAULO",
+      "description": "Disciplina e Estratégia: Desenvolvimento de competências estratégicas e operacionais em um ambiente militar exigente."
+    },
+    {
+      "company": "Suporte técnico",
+      "title": "Suporte técnico",
+      "start": "May 2018",
+      "end": "Dec 2018",
+      "location": "São Paulo, Brasil",
+      "description": "Realizava manutenção de caixas eletrônicos, computadores, impressoras térmicas e máquinas de mercado com leitura de códigos de barras, além de suporte técnico para diagnóstico e resolução de problemas."
+    }
+  ],
+  "education": [
+    {
+      "school": "Universidade Anhanguera São Paulo",
+      "degree": "Curso Superior de Tecnologia (CST)",
+      "field": "Arquitetura de dados",
+      "start_year": "2024",
+      "end_year": "2026"
+    },
+    {
+      "school": "ETEC - Escola Técnica Estadual de São Paulo",
+      "degree": "Ensino Técnico",
+      "field": "Information Technology",
+      "start_year": "2019",
+      "end_year": "2021"
+    },
+    {
+      "school": "Escola Estadual Doutor Honorio Monteiro",
+      "degree": null,
+      "field": null,
+      "start_year": "2005",
+      "end_year": "2018"
+    }
+  ],
+  "certifications": [
+    {
+      "title": "Santander Bootcamp 2023 - Ciência de Dados com Python",
+      "issuer": "DIO",
+      "credential_id": "https://www.dio.me/certificate/E3058F28/share",
+      "url": "https://www.dio.me/certificate/E3058F28/share?trk=public_profile_see-credential"
+    },
+    {
+      "title": "Juniper Networks Automation Using Python and PyEZ",
+      "issuer": "Juniper Networks",
+      "credential_id": null,
+      "url": "https://www.coursera.org/account/accomplishments/verify/BM339L4FG3AA?trk=public_profile_see-credential"
+    },
+    {
+      "title": "Cybersecurity",
+      "issuer": "FIAP",
+      "credential_id": "d3ec12a6606e6cb875e08d0345d6865d",
+      "url": "https://on.fiap.com.br/pluginfile.php/1/local_nanocourses/certificado_nanocourse/48391/d3ec12a6606e6cb875e08d0345d6865d/certificado.png?trk=public_profile_see-credential"
+    },
+    {
+      "title": "Pentest",
+      "issuer": "Desec Security",
+      "credential_id": "BRYV-SDZIM-SIWY",
+      "url": null
+    },
+    {
+      "title": "Python",
+      "issuer": "FIAP",
+      "credential_id": "5bc8281e66af2ebcd38e9c8e6a0a6fb7",
+      "url": "https://on.fiap.com.br/pluginfile.php/1/local_nanocourses/certificado_nanocourse/47259/5bc8281e66af2ebcd38e9c8e6a0a6fb7/certificado.png?trk=public_profile_see-credential"
+    },
+    {
+      "title": "Fundamentos do Big Data: Técnicas e Conceitos",
+      "issuer": "LinkedIn",
+      "credential_id": null,
+      "url": "https://www.linkedin.com/learning/certificates/aa815378b3d13cc87de436dfbde7b4d2da1fdb8b45d2d1685d0237fec68b062c?trk=public_profile_see-credential"
+    },
+    {
+      "title": "JNCIA (JN0-103) Cert Prep: 1 Junos Fundamentals",
+      "issuer": "LinkedIn",
+      "credential_id": null,
+      "url": "https://www.linkedin.com/learning/certificates/0332b21c0760f48bdc3f2d9fea660c9e7c60034fbafe5813cf220726e73aab31?trk=public_profile_see-credential"
+    },
+    {
+      "title": "Agilidade de Aprendizagem",
+      "issuer": "LinkedIn",
+      "credential_id": null,
+      "url": "https://www.linkedin.com/learning/certificates/b55d20f30a99317d0f68e3d3000d68b04070b32a5576692b8dc6c7ed229d36e2?trk=public_profile_see-credential"
+    },
+    {
+      "title": "Técnicas de Comunicação Interpessoal",
+      "issuer": "LinkedIn",
+      "credential_id": null,
+      "url": "https://www.linkedin.com/learning/certificates/215f3036a0df0d8dbef8b57445ba0a313b4f610eca36492279d548aca19a2cf2?trk=public_profile_see-credential"
+    },
+    {
+      "title": "Introdução a Banco de Dados My SQL",
+      "issuer": "Udemy",
+      "credential_id": null,
+      "url": null
+    }
+  ]
+}

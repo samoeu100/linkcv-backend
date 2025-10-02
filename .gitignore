@@ -1,0 +1,74 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+.ve/
+ENV/
+ve/
+env/
+.venv*/
+venv*/
+pip-wheel-metadata/
+
+# Environment variables
+.env
+*.env
+
+# IDE / Editor configs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+logs/
+*.out
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+
+tmp/
+*.bak
+*.swp
+
+# Databases
+*.sqlite3
+*.db
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Coverage / testing
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+.pytest_cache/
+.pytest_cache/*
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+.ve
+# Node (caso use no frontend do mesmo repo)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
