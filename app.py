@@ -187,13 +187,15 @@ def webhook_payment():
         db = get_db()
         cur = db.cursor()
         try:
+            normalized_status = "paid"
             cur.execute(
+                
                 """
                 INSERT INTO payments (cpf, transaction_id, resume_token, amount, status, created_at)
                 VALUES (%s, %s, %s, %s, %s, %s)
                 ON CONFLICT (transaction_id) DO NOTHING
                 """,
-                (cpf, tx_id, resume_token, amount, status, time.time())
+                (cpf, tx_id, resume_token, amount, normalized_status, time.time())
             )
             db.commit()
             print(f">>> Pagamento registrado {tx_id}, token={resume_token}")
