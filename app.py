@@ -138,24 +138,33 @@ def webhook_payment():
 
     cpf = metadata.get("taxId")
     tx_id = billing.get("id")
-    amount = int(billing.get("paidAmount", 0))
+    amount = billing.get("paidAmount") or billing.get("amount", 0)
     status = billing.get("status", "UNKNOWN")
-    resume_token = secrets.token_hex(8)
 
-    db = get_db()
-    cur = db.cursor()
-    try:
-        cur.execute(
-            "INSERT INTO payments (cpf, transaction_id, resume_token, amount, status, created_at) VALUES (%s, %s, %s, %s, %s, %s)",
-            (cpf, tx_id, resume_token, amount, status, time.time())
-        )
-        db.commit()
-        print(f">>> Pagamento registrado {tx_id}, token={resume_token}")
-    except Exception as e:
-        print("Erro ou duplicado:", e)
-    cur.close()
+    # Considera ACTIVE como pago também
+    if status.upper() in ["ACTIVE", "PAID"]:
+        resume_token = secrets.token_hex(8)
 
-    return jsonify({"status": "ok", "resume_token": resume_token}), 200
+        db = get_db()
+        cur = db.cursor()
+        try:
+            cur.execute(
+                """
+                INSERT INTO payments (cpf, transaction_id, resume_token, amount, status, created_at)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                ON CONFLICT (transaction_id) DO NOTHING
+                """,
+                (cpf, tx_id, resume_token, amount, status, time.time())
+            )
+            db.commit()
+            print(f">>> Pagamento registrado {tx_id}, token={resume_token}")
+        except Exception as e:
+            print("Erro ou duplicado:", e)
+        cur.close()
+
+        return jsonify({"status": "ok", "resume_token": resume_token}), 200
+    else:
+        return jsonify({"error": f"Status inválido: {status}"}), 400
 
 # ========== Generate ==========
 @app.route("/api/generate", methods=["POST"])
