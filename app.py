@@ -9,6 +9,7 @@ import psycopg2.extras
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 from dotenv import load_dotenv
+from datetime import datetime, timezone
 
 # ========== Config ==========
 load_dotenv()
@@ -143,9 +144,12 @@ def payment_status():
         return jsonify({"paid": False}), 200
 
     # Validação simples
+    expires_at = payment["expires_at"]
+    now = datetime.now(timezone.utc)
+    
     is_valid = (
         payment["status"] == "paid"
-        and (payment["expires_at"] is None or payment["expires_at"] > time.time())
+        and (expires_at is None or expires_at > now)
         and payment["usage_count"] < payment["max_usage"]
     )
 
