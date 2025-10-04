@@ -122,6 +122,8 @@ def get_cache_path(cpf, linkedin_url):
 def healthz():
     return {"status": "ok"}, 200
 
+from datetime import datetime, timezone
+
 @app.route("/api/payment-status", methods=["GET"])
 def payment_status():
     cpf = request.args.get("cpf")
@@ -143,10 +145,13 @@ def payment_status():
     if not payment:
         return jsonify({"paid": False}), 200
 
-    # Validação simples
+    # Normaliza timezone do expires_at (torna UTC)
     expires_at = payment["expires_at"]
+    if expires_at and expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+
     now = datetime.now(timezone.utc)
-    
+
     is_valid = (
         payment["status"] == "paid"
         and (expires_at is None or expires_at > now)
@@ -155,6 +160,15 @@ def payment_status():
 
     if not is_valid:
         return jsonify({"paid": False}), 200
+
+    return jsonify({
+        "paid": True,
+        "resume_token": payment["resume_token"],
+        "expires_at": expires_at.isoformat() if expires_at else None,
+        "usage_count": payment["usage_count"],
+        "max_usage": payment["max_usage"]
+    }), 200
+
 
     return jsonify({
         "paid": True,
