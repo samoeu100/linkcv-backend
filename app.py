@@ -198,38 +198,56 @@ def webhook_payment():
     amount = billing.get("paidAmount") or billing.get("amount", 0)
     status = billing.get("status", "UNKNOWN")
 
+    if not cpf:
+        return jsonify({"error": "CPF não encontrado no webhook"}), 400
+
     # Considera ACTIVE como pago também
     if status.upper() in ["ACTIVE", "PAID"]:
         resume_token = secrets.token_hex(8)
+        normalized_status = "paid"
 
         db = get_db()
         cur = db.cursor()
+
         try:
-            normalized_status = "paid"
-            cur.execute(
-                
-                """
-                INSERT INTO payments (cpf, transaction_id, resume_token, amount, status, created_at, usage_count)
-                VALUES (%s, %s, %s, %s, %s, %s, 0)
-                ON CONFLICT (cpf) DO UPDATE
-                SET status = EXCLUDED.status,
-                    resume_token = EXCLUDED.resume_token,
-                    created_at = EXCLUDED.created_at,
-                    usage_count = 0,
-                    expires_at = NOW() + interval '3 days'
-                """,
-                (cpf, tx_id, resume_token, amount, normalized_status, time.time())
-            )
+            # Remove o uso de ON CONFLICT (cpf) e faz manualmente
+            cur.execute("SELECT id FROM payments WHERE cpf=%s", (cpf,))
+            existing = cur.fetchone()
+
+            if existing:
+                # Atualiza o registro existente
+                cur.execute("""
+                    UPDATE payments
+                    SET transaction_id=%s,
+                        resume_token=%s,
+                        amount=%s,
+                        status=%s,
+                        created_at=%s,
+                        usage_count=0,
+                        expires_at=NOW() + interval '3 days'
+                    WHERE cpf=%s
+                """, (tx_id, resume_token, amount, normalized_status, time.time(), cpf))
+                print(f">>> Pagamento atualizado para CPF {cpf}, token={resume_token}")
+            else:
+                # Cria novo registro se não existir
+                cur.execute("""
+                    INSERT INTO payments (cpf, transaction_id, resume_token, amount, status, created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (cpf, tx_id, resume_token, amount, normalized_status, time.time()))
+                print(f">>> Pagamento novo criado para CPF {cpf}, token={resume_token}")
+
             db.commit()
-            print(f">>> Pagamento registrado {tx_id}, token={resume_token}")
+
         except Exception as e:
-            print("Erro ou duplicado:", e)
-        cur.close()
+            db.rollback()
+            print("Erro ao registrar pagamento:", e)
+        finally:
+            cur.close()
 
         return jsonify({"status": "ok", "resume_token": resume_token}), 200
+
     else:
         return jsonify({"error": f"Status inválido: {status}"}), 400
-
 # ========== Generate ==========
 @app.route("/api/generate", methods=["POST"])
 def generate():
