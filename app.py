@@ -209,9 +209,14 @@ def webhook_payment():
             cur.execute(
                 
                 """
-                INSERT INTO payments (cpf, transaction_id, resume_token, amount, status, created_at)
-                VALUES (%s, %s, %s, %s, %s, %s)
-                ON CONFLICT (transaction_id) DO NOTHING
+                INSERT INTO payments (cpf, transaction_id, resume_token, amount, status, created_at, usage_count)
+                VALUES (%s, %s, %s, %s, %s, %s, 0)
+                ON CONFLICT (cpf) DO UPDATE
+                SET status = EXCLUDED.status,
+                    resume_token = EXCLUDED.resume_token,
+                    created_at = EXCLUDED.created_at,
+                    usage_count = 0,
+                    expires_at = NOW() + interval '3 days'
                 """,
                 (cpf, tx_id, resume_token, amount, normalized_status, time.time())
             )
