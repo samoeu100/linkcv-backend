@@ -215,7 +215,7 @@ def webhook_payment():
             existing = cur.fetchone()
 
             if existing:
-                # Atualiza o registro existente
+    # Atualiza o registro existente e acumula créditos
                 cur.execute("""
                     UPDATE payments
                     SET transaction_id=%s,
@@ -224,17 +224,18 @@ def webhook_payment():
                         status=%s,
                         created_at=%s,
                         usage_count=0,
-                        expires_at=NOW() + interval '3 days'
+                        max_usage = max_usage + 2,  -- soma mais 2 créditos
+                        expires_at = GREATEST(expires_at, NOW()) + interval '3 days'
                     WHERE cpf=%s
                 """, (tx_id, resume_token, amount, normalized_status, time.time(), cpf))
-                print(f">>> Pagamento atualizado para CPF {cpf}, token={resume_token}")
+                print(f">>> Pagamento atualizado (acumulativo) para CPF {cpf}, token={resume_token}")
             else:
                 # Cria novo registro se não existir
                 cur.execute("""
-                    INSERT INTO payments (cpf, transaction_id, resume_token, amount, status, created_at)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    INSERT INTO payments (cpf, transaction_id, resume_token, amount, status, created_at, max_usage)
+                    VALUES (%s, %s, %s, %s, %s, %s, 2)
                 """, (cpf, tx_id, resume_token, amount, normalized_status, time.time()))
-                print(f">>> Pagamento novo criado para CPF {cpf}, token={resume_token}")
+                print(f">>> Novo pagamento criado para CPF {cpf}, token={resume_token}")
 
             db.commit()
 
