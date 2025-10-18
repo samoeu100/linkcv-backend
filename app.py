@@ -218,15 +218,25 @@ def webhook_payment():
     # Atualiza o registro existente e acumula créditos
                 cur.execute("""
                     UPDATE payments
-                    SET transaction_id=%s,
-                        resume_token=%s,
-                        amount=%s,
-                        status=%s,
-                        created_at=%s,
-                        usage_count=0,
-                        max_usage = max_usage + 2,  -- soma mais 2 créditos
+                    SET transaction_id = %s,
+                        resume_token = %s,
+                        amount = %s,
+                        status = %s,
+                        created_at = %s,
+                        -- cálculo tipo saldo bancário:
+                        max_usage = CASE
+                            WHEN usage_count < max_usage THEN  -- ainda tem saldo
+                                max_usage + 2
+                            ELSE  -- já usou tudo, começa de novo
+                                2
+                        END,
+                        -- se o cara usou tudo e recomeçou, zera o contador
+                        usage_count = CASE
+                            WHEN usage_count >= max_usage THEN 0
+                            ELSE usage_count
+                        END,
                         expires_at = GREATEST(expires_at, NOW()) + interval '3 days'
-                    WHERE cpf=%s
+                    WHERE cpf = %s
                 """, (tx_id, resume_token, amount, normalized_status, time.time(), cpf))
                 print(f">>> Pagamento atualizado (acumulativo) para CPF {cpf}, token={resume_token}")
             else:
