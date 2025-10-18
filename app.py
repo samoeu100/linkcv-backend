@@ -122,8 +122,6 @@ def get_cache_path(cpf, linkedin_url):
 def healthz():
     return {"status": "ok"}, 200
 
-from datetime import datetime, timezone
-
 @app.route("/api/payment-status", methods=["GET"])
 def payment_status():
     cpf = request.args.get("cpf")
@@ -145,7 +143,6 @@ def payment_status():
     if not payment:
         return jsonify({"paid": False}), 200
 
-    # Normaliza timezone do expires_at (torna UTC)
     expires_at = payment["expires_at"]
     if expires_at and expires_at.tzinfo is None:
         expires_at = expires_at.replace(tzinfo=timezone.utc)
@@ -165,15 +162,6 @@ def payment_status():
         "paid": True,
         "resume_token": payment["resume_token"],
         "expires_at": expires_at.isoformat() if expires_at else None,
-        "usage_count": payment["usage_count"],
-        "max_usage": payment["max_usage"]
-    }), 200
-
-
-    return jsonify({
-        "paid": True,
-        "resume_token": payment["resume_token"],
-        "expires_at": payment["expires_at"].isoformat() if payment["expires_at"] else None,
         "usage_count": payment["usage_count"],
         "max_usage": payment["max_usage"]
     }), 200
@@ -201,7 +189,6 @@ def webhook_payment():
     if not cpf:
         return jsonify({"error": "CPF não encontrado no webhook"}), 400
 
-    # Considera ACTIVE como pago também
     if status.upper() in ["ACTIVE", "PAID"]:
         resume_token = secrets.token_hex(8)
         normalized_status = "paid"
@@ -210,12 +197,11 @@ def webhook_payment():
         cur = db.cursor()
 
         try:
-            # Remove o uso de ON CONFLICT (cpf) e faz manualmente
             cur.execute("SELECT id FROM payments WHERE cpf=%s", (cpf,))
             existing = cur.fetchone()
 
             if existing:
-    # Atualiza o registro existente e acumula créditos
+                # Atualiza o registro existente com lógica de "saldo bancário"
                 cur.execute("""
                     UPDATE payments
                     SET transaction_id = %s,
@@ -223,14 +209,10 @@ def webhook_payment():
                         amount = %s,
                         status = %s,
                         created_at = %s,
-                        -- cálculo tipo saldo bancário:
                         max_usage = CASE
-                            WHEN usage_count < max_usage THEN  -- ainda tem saldo
-                                max_usage + 2
-                            ELSE  -- já usou tudo, começa de novo
-                                2
+                            WHEN usage_count < max_usage THEN max_usage + 2
+                            ELSE 2
                         END,
-                        -- se o cara usou tudo e recomeçou, zera o contador
                         usage_count = CASE
                             WHEN usage_count >= max_usage THEN 0
                             ELSE usage_count
@@ -238,7 +220,7 @@ def webhook_payment():
                         expires_at = GREATEST(expires_at, NOW()) + interval '3 days'
                     WHERE cpf = %s
                 """, (tx_id, resume_token, amount, normalized_status, time.time(), cpf))
-                print(f">>> Pagamento atualizado (acumulativo) para CPF {cpf}, token={resume_token}")
+                print(f">>> Pagamento atualizado (saldo acumulado) para CPF {cpf}, token={resume_token}")
             else:
                 # Cria novo registro se não existir
                 cur.execute("""
@@ -257,8 +239,8 @@ def webhook_payment():
 
         return jsonify({"status": "ok", "resume_token": resume_token}), 200
 
-    else:
-        return jsonify({"error": f"Status inválido: {status}"}), 400
+    return jsonify({"error": f"Status inválido: {status}"}), 400
+
 # ========== Generate ==========
 @app.route("/api/generate", methods=["POST"])
 def generate():
@@ -273,7 +255,7 @@ def generate():
     db = get_db()
     cur = db.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-    # 🔑 Sempre valida token antes de qualquer coisa
+    # 🔑 Valida token antes de gerar
     cur.execute("SELECT * FROM validate_resume_token(%s, %s)", (cpf, token))
     result = cur.fetchone()
     if not result or not result["valid"]:
